@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro y Búsqueda de Estudiantes</title>
+    <style>
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .resultado {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <h2>Registro y Búsqueda de Estudiantes</h2>
+
+    <form id="estudianteForm">
+        <label for="cedula">Cédula:</label>
+        <input type="text" id="cedula" name="cedula" required>
+
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="apellido">Apellido:</label>
+        <input type="text" id="apellido" name="apellido" required>
+
+        <label for="telefono">Direccion:</label>
+        <input type="text" id="direccion" name="direccion" required>
+
+        <button type="button" onclick="registrarEstudiante()">Registrar Estudiante</button>
+    </form>
+
+
+    <div class="resultado">
+        <h3>Buscar</h3>
+        <label for="busqueda">Buscar por Nombre:</label>
+        <input type="text" id="busqueda" onkeyup="buscarEstudiante()">
+        <ul id="listaEstudiantes"></ul>
+    </div>
+
+    <script>
+        function registrarEstudiante() {
+            var cedula = document.getElementById("cedula").value;
+            var nombre = document.getElementById("nombre").value;
+            var apellido = document.getElementById("apellido").value;
+            var telefono = document.getElementById("direccion").value;
+
+            var formData = new FormData();
+            formData.append('cedula', cedula);
+            formData.append('nombre', nombre);
+            formData.append('apellido', apellido);
+            formData.append('direccion', direccion);
+
+            fetch('registro.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log('Registro exitoso:', data);
+                alert('Estudiante registrado exitosamente.');
+                document.getElementById("estudianteForm").reset();
+            })
+            .catch(error => {
+                console.error('Error al registrar estudiante:', error);
+                alert('Hubo un error al registrar el estudiante.');
+            });
+        }
+
+        function buscarEstudiante() {
+            var input = document.getElementById("busqueda");
+            var filter = input.value.toUpperCase();
+            var listaEstudiantes = document.getElementById("listaEstudiantes");
+            listaEstudiantes.innerHTML = '';
+
+            fetch('buscar.php?nombre=' + filter)
+            .then(response => response.text())
+            .then(data => {
+                listaEstudiantes.innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Error al buscar estudiantes:', error);
+                alert('Hubo un error al buscar estudiantes.');
+            });
+        }
+    </script>
+</body>
+</html>
